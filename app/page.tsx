@@ -34,15 +34,14 @@ export default function Home() {
     const emojis = ['🌸', '💐', '🌹', '💖', '✨', '🌷', '💝', '✨'];
     const newParticles: Particle[] = [];
 
-    // Robotun merkezinden çevreye patlayan çiçekler
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 35; i++) {
       newParticles.push({
         id: Date.now() + i,
         left: 50 + (Math.random() * 20 - 10),
         emoji: emojis[Math.floor(Math.random() * emojis.length)],
         size: Math.random() * 1.6 + 1.2,
         duration: Math.random() * 1.5 + 2.2,
-        drift: Math.random() * 160 - 80
+        drift: Math.random() * 200 - 100
       });
     }
 
@@ -59,6 +58,26 @@ export default function Home() {
         style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1 }}
       />
 
+      {/* Robotun Elinde Sabit Duran Çiçek Buketi (Tıklamadan Önce & Sonra) */}
+      <div style={{
+        position: 'absolute',
+        top: '52%',
+        left: '50%',
+        transform: given 
+          ? 'translate(-50%, -65%) scale(1.6) rotate(10deg)' 
+          : 'translate(-38%, -35%) scale(1) rotate(-15deg)',
+        zIndex: 10,
+        pointerEvents: 'none',
+        fontSize: '4.5rem',
+        transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        filter: given 
+          ? 'drop-shadow(0 0 35px rgba(244, 114, 182, 0.9))' 
+          : 'drop-shadow(0 8px 16px rgba(0,0,0,0.6))',
+        animation: given ? 'pulseGlow 2s infinite alternate' : 'subtleFloat 3s ease-in-out infinite alternate'
+      }}>
+        💐
+      </div>
+
       {/* Robotun Mesaj Balonu */}
       <div style={{
         position: 'absolute',
@@ -73,7 +92,7 @@ export default function Home() {
         maxWidth: '480px'
       }}>
         <div style={{
-          background: 'rgba(20, 15, 30, 0.65)',
+          background: 'rgba(20, 15, 30, 0.7)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           border: '1.5px solid rgba(244, 114, 182, 0.5)',
@@ -85,43 +104,13 @@ export default function Home() {
         }}>
           <div style={{ fontSize: '2.2rem', marginBottom: '4px' }}>🤖💐✨</div>
           <h2 style={{ margin: '0 0 6px 0', fontSize: '1.5rem', color: '#fff', fontWeight: '800', textShadow: '0 2px 10px rgba(0,0,0,0.6)' }}>
-            Bunlar Senin İçin Ezgi! 🌸
+            Bunlar Senin çin Ezgi! 🌸
           </h2>
           <p style={{ margin: 0, fontSize: '1rem', lineHeight: '1.5', color: '#fbcfe8' }}>
             Umut bu çiçekleri sana vermem için beni özel olarak görevlendirdi! Dünyanın en güzel sevgilisi, iyi ki varsın 💖
           </p>
-          
-          {/* Konuşma Baloncuğu Oku */}
-          <div style={{
-            position: 'absolute',
-            bottom: '-12px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 0,
-            height: 0,
-            borderLeft: '12px solid transparent',
-            borderRight: '12px solid transparent',
-            borderTop: '12px solid rgba(244, 114, 182, 0.5)'
-          }}></div>
         </div>
       </div>
-
-      {/* Robotun Elinden Çıkan Büyük Hediye Çiçek Animasyonu */}
-      {given && (
-        <div style={{
-          position: 'absolute',
-          top: '45%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 20,
-          pointerEvents: 'none',
-          fontSize: '6rem',
-          animation: 'robotGive 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
-          filter: 'drop-shadow(0 0 35px rgba(236, 72, 153, 0.8))'
-        }}>
-          💐
-        </div>
-      )}
 
       {/* Alt Kısımdaki Buton */}
       <div style={{
@@ -162,7 +151,7 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Robotun Etrafından Patlayan Çiçekler */}
+      {/* Patlayan Çiçekler */}
       {particles.map((p) => (
         <div
           key={p.id}
@@ -182,32 +171,18 @@ export default function Home() {
         </div>
       ))}
 
-      {/* Animasyonlar */}
       <style>{`
-        @keyframes robotGive {
-          0% {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.2) rotate(-30deg);
-          }
-          50% {
-            opacity: 1;
-            transform: translate(-50%, -65%) scale(1.4) rotate(10deg);
-          }
-          100% {
-            opacity: 1;
-            transform: translate(-50%, -55%) scale(1.1) rotate(0deg);
-          }
+        @keyframes subtleFloat {
+          0% { transform: translate(-38%, -35%) scale(1) rotate(-15deg); }
+          100% { transform: translate(-38%, -38%) scale(1.05) rotate(-10deg); }
         }
-
+        @keyframes pulseGlow {
+          0% { filter: drop-shadow(0 0 25px rgba(244, 114, 182, 0.7)); }
+          100% { filter: drop-shadow(0 0 45px rgba(244, 114, 182, 1)); }
+        }
         @keyframes burstOut {
-          0% {
-            opacity: 1;
-            transform: translate(0, 0) scale(0.5);
-          }
-          100% {
-            opacity: 0;
-            transform: translate(var(--drift), -350px) scale(1.2) rotate(45deg);
-          }
+          0% { opacity: 1; transform: translate(0, 0) scale(0.5); }
+          100% { opacity: 0; transform: translate(var(--drift), -350px) scale(1.2) rotate(45deg); }
         }
       `}</style>
     </main>
