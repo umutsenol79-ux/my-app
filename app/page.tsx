@@ -2,9 +2,18 @@
 
 import { useEffect, useState } from 'react';
 
+interface Particle {
+  id: number;
+  left: number;
+  emoji: string;
+  size: number;
+  duration: number;
+  drift: number;
+}
+
 export default function Home() {
-  const [showHeart, setShowHeart] = useState(false);
-  const [flowers, setFlowers] = useState<number[]>([]);
+  const [given, setGiven] = useState(false);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -19,125 +28,185 @@ export default function Home() {
     };
   }, []);
 
-  const handleGiveFlower = () => {
-    setShowHeart(true);
-    setFlowers(prev => [...prev, Date.now()]);
-    setTimeout(() => {
-      setShowHeart(false);
-    }, 4000);
+  const handleRobotGivesFlower = () => {
+    setGiven(true);
+
+    const emojis = ['🌸', '💐', '🌹', '💖', '✨', '🌷', '💝', '✨'];
+    const newParticles: Particle[] = [];
+
+    // Robotun merkezinden çevreye patlayan çiçekler
+    for (let i = 0; i < 30; i++) {
+      newParticles.push({
+        id: Date.now() + i,
+        left: 50 + (Math.random() * 20 - 10),
+        emoji: emojis[Math.floor(Math.random() * emojis.length)],
+        size: Math.random() * 1.6 + 1.2,
+        duration: Math.random() * 1.5 + 2.2,
+        drift: Math.random() * 160 - 80
+      });
+    }
+
+    setParticles(newParticles);
   };
 
   return (
-    <main style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', backgroundColor: '#09090b', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <main style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', backgroundColor: '#06060c', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       
-      {/* 3D Spline Robot */}
+      {/* 3D Spline Robot Sahnesi */}
       {/* @ts-expect-error spline-viewer is a web component */}
       <spline-viewer 
         url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" 
         style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1 }}
       />
 
-      {/* Üstte Çıkan Mesaj Balonu */}
+      {/* Robotun Mesaj Balonu */}
       <div style={{
         position: 'absolute',
-        top: '12%',
+        top: '8%',
         left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 10,
+        transform: given ? 'translateX(-50%) scale(1)' : 'translateX(-50%) scale(0.8)',
+        opacity: given ? 1 : 0,
+        zIndex: 25,
         pointerEvents: 'none',
-        transition: 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-        opacity: showHeart ? 1 : 0,
-        transformOrigin: 'center bottom',
-        scale: showHeart ? '1' : '0.8'
+        transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        width: '90%',
+        maxWidth: '480px'
       }}>
         <div style={{
-          background: 'rgba(255, 255, 255, 0.15)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-          padding: '16px 28px',
-          borderRadius: '24px',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-          textAlign: 'center'
+          background: 'rgba(20, 15, 30, 0.65)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1.5px solid rgba(244, 114, 182, 0.5)',
+          padding: '22px 28px',
+          borderRadius: '26px',
+          boxShadow: '0 20px 50px rgba(236, 72, 153, 0.35)',
+          textAlign: 'center',
+          position: 'relative'
         }}>
-          <h2 style={{ margin: 0, fontSize: '1.6rem', color: '#fff', fontWeight: '700', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
-            Bunlar senin için! 🌸✨
+          <div style={{ fontSize: '2.2rem', marginBottom: '4px' }}>🤖💐✨</div>
+          <h2 style={{ margin: '0 0 6px 0', fontSize: '1.5rem', color: '#fff', fontWeight: '800', textShadow: '0 2px 10px rgba(0,0,0,0.6)' }}>
+            Bunlar Senin İçin Ezgi! 🌸
           </h2>
-          <p style={{ margin: '4px 0 0 0', fontSize: '0.95rem', color: '#fbcfe8' }}>
-            Robot hediyeni çok sevdi 💖
+          <p style={{ margin: 0, fontSize: '1rem', lineHeight: '1.5', color: '#fbcfe8' }}>
+            Umut bu çiçekleri sana vermem için beni özel olarak görevlendirdi! Dünyanın en güzel sevgilisi, iyi ki varsın 💖
           </p>
+          
+          {/* Konuşma Baloncuğu Oku */}
+          <div style={{
+            position: 'absolute',
+            bottom: '-12px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 0,
+            height: 0,
+            borderLeft: '12px solid transparent',
+            borderRight: '12px solid transparent',
+            borderTop: '12px solid rgba(244, 114, 182, 0.5)'
+          }}></div>
         </div>
       </div>
 
-      {/* Alt Kısımdaki Çiçek Verme Butonu */}
+      {/* Robotun Elinden Çıkan Büyük Hediye Çiçek Animasyonu */}
+      {given && (
+        <div style={{
+          position: 'absolute',
+          top: '45%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 20,
+          pointerEvents: 'none',
+          fontSize: '6rem',
+          animation: 'robotGive 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+          filter: 'drop-shadow(0 0 35px rgba(236, 72, 153, 0.8))'
+        }}>
+          💐
+        </div>
+      )}
+
+      {/* Alt Kısımdaki Buton */}
       <div style={{
         position: 'absolute',
         bottom: '8%',
         left: '50%',
         transform: 'translateX(-50%)',
-        zIndex: 10,
+        zIndex: 30,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        gap: '12px'
+        alignItems: 'center'
       }}>
         <button
-          onClick={handleGiveFlower}
+          onClick={handleRobotGivesFlower}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
+            gap: '12px',
             padding: '16px 36px',
             fontSize: '1.2rem',
-            fontWeight: '600',
+            fontWeight: '700',
             color: '#fff',
-            background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
-            border: 'none',
+            background: given 
+              ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
+              : 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #f43f5e 100%)',
+            border: '1.5px solid rgba(255, 255, 255, 0.4)',
             borderRadius: '9999px',
             cursor: 'pointer',
-            boxShadow: '0 10px 25px rgba(236, 72, 153, 0.4)',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            boxShadow: '0 12px 35px rgba(236, 72, 153, 0.5)',
+            transition: 'all 0.3s ease',
             outline: 'none'
           }}
-          onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.95)')}
+          onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.94)')}
           onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
         >
-          <span>Robota Çiçek Ver</span>
-          <span style={{ fontSize: '1.4rem' }}>🌸</span>
+          <span>{given ? 'Çiçekler Teslim Edildi 💖' : 'Robottan Çiçeğini Al 🌸'}</span>
+          <span style={{ fontSize: '1.4rem' }}>{given ? '✨' : '🤖'}</span>
         </button>
       </div>
 
-      {/* Uçuşan Çiçek Efektleri */}
-      {flowers.map((id) => (
+      {/* Robotun Etrafından Patlayan Çiçekler */}
+      {particles.map((p) => (
         <div
-          key={id}
+          key={p.id}
           style={{
             position: 'absolute',
-            bottom: '15%',
-            left: `${45 + (Math.random() * 10 - 5)}%`,
-            zIndex: 15,
-            fontSize: '2.5rem',
+            top: '48%',
+            left: `${p.left}%`,
+            zIndex: 18,
+            fontSize: `${p.size}rem`,
             pointerEvents: 'none',
-            animation: 'flyUp 2s ease-out forwards'
+            // @ts-expect-error css variable
+            '--drift': `${p.drift}px`,
+            animation: `burstOut ${p.duration}s cubic-bezier(0.25, 1, 0.5, 1) forwards`
           }}
         >
-          💐
+          {p.emoji}
         </div>
       ))}
 
-      {/* Animasyon CSS */}
+      {/* Animasyonlar */}
       <style>{`
-        @keyframes flyUp {
+        @keyframes robotGive {
           0% {
-            opacity: 1;
-            transform: translateY(0) scale(0.6) rotate(0deg);
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.2) rotate(-30deg);
           }
           50% {
             opacity: 1;
-            transform: translateY(-200px) scale(1.3) rotate(20deg);
+            transform: translate(-50%, -65%) scale(1.4) rotate(10deg);
+          }
+          100% {
+            opacity: 1;
+            transform: translate(-50%, -55%) scale(1.1) rotate(0deg);
+          }
+        }
+
+        @keyframes burstOut {
+          0% {
+            opacity: 1;
+            transform: translate(0, 0) scale(0.5);
           }
           100% {
             opacity: 0;
-            transform: translateY(-400px) scale(1) rotate(-15deg);
+            transform: translate(var(--drift), -350px) scale(1.2) rotate(45deg);
           }
         }
       `}</style>
