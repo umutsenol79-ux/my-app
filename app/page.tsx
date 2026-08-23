@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { SplineSceneBasic } from "@/components/spline-scene-demo"
 
 export default function Home() {
