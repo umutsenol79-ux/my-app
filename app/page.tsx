@@ -63,7 +63,7 @@ export default function FinanceDashboard() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#090d16', color: '#f1f5f9', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       
-      {/* Üst Canlı Kayan Şerit (Ticker) */}
+      {/* Üst Canlı Kayan Şerit */}
       <div style={{ backgroundColor: '#0f172a', borderBottom: '1px solid #1e293b', overflow: 'hidden', whiteSpace: 'nowrap', padding: '10px 0' }}>
         <div style={{ display: 'inline-block', animation: 'marquee 25s linear infinite' }}>
           {rates.map((r, i) => (
@@ -111,11 +111,10 @@ export default function FinanceDashboard() {
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              transition: 'all 0.2s'
+              gap: '8px'
             }}
           >
-            <span style={{ transform: isRefreshing ? 'rotate(360deg)' : 'none', transition: 'transform 0.5s' }}>🔄</span>
+            <span>🔄</span>
             {isRefreshing ? 'Güncelleniyor...' : 'Kurları Yenile'}
           </button>
         </div>
@@ -124,7 +123,7 @@ export default function FinanceDashboard() {
       {/* Ana Gövde */}
       <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px 60px 20px' }}>
         
-        {/* Canlı Hesap Makinesi / Çevirici Kartı */}
+        {/* Çevirici Kartı */}
         <div style={{
           background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7))',
           backdropFilter: 'blur(16px)',
@@ -140,7 +139,7 @@ export default function FinanceDashboard() {
         }}>
           <div>
             <h3 style={{ margin: '0 0 6px 0', fontSize: '1.2rem', color: '#f8fafc' }}>🧮 Hızlı Kur & Altın Hesaplayıcı</h3>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: '#94a3b8' }}>Miktar girin, güncel satış kuruna göre TL karşılığını anında hesaplayın.</p>
+            <p style={{ margin: 0, fontSize: '0.9rem', color: '#94a3b8' }}>Miktar girin, güncel satış kuruna göre TL karşılığını hesaplayın.</p>
           </div>
 
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -214,8 +213,7 @@ export default function FinanceDashboard() {
                 color: filter === tab.id ? '#fbbf24' : '#94a3b8',
                 fontWeight: '600',
                 fontSize: '0.9rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
+                cursor: 'pointer'
               }}
             >
               {tab.label}
@@ -223,7 +221,7 @@ export default function FinanceDashboard() {
           ))}
         </div>
 
-        {/* Fiyat Kartları Tablosu / Grid */}
+        {/* Fiyat Kartları */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))', gap: '20px' }}>
           {filteredRates.map((item) => (
             <div
@@ -233,7 +231,6 @@ export default function FinanceDashboard() {
                 border: '1px solid #1e293b',
                 borderRadius: '18px',
                 padding: '20px',
-                transition: 'transform 0.2s, border-color 0.2s',
                 boxShadow: '0 10px 25px rgba(0,0,0,0.3)'
               }}
             >
