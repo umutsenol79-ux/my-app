@@ -78,7 +78,7 @@ export default function FinanceRobotApp() {
         </div>
       </div>
 
-      {/* Ana Cam Kartlar (Robotun Üstünde Katman) */}
+      {/* Ana Cam Kartlar */}
       <div style={{
         position: 'relative',
         zIndex: 10,
@@ -158,7 +158,7 @@ export default function FinanceRobotApp() {
             </div>
           </div>
 
-          {/* Kurlar Izgarası */}
+          {/* Kurlar Listesi */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
             {rates.map((item) => (
               <div
@@ -188,7 +188,7 @@ export default function FinanceRobotApp() {
 
         </div>
 
-        {/* Sağ Panel: Konuşma Baloncuğu */}
+        {/* Sağ Panel: Konuşma Balonu */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: '20px' }}>
           <div style={{
             maxWidth: '380px',
