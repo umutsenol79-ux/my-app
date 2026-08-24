@@ -11,28 +11,26 @@ const Spline = dynamic(() => import('@splinetool/react-spline'), {
 interface RateItem {
   id: string;
   name: string;
-  sub: string;
+  description: string;
   buy: number;
   sell: number;
   change: number;
-  category: 'altin' | 'doviz' | 'kripto';
 }
 
 const kurListesi: RateItem[] = [
-  { id: 'GA', name: 'Gram Altın', sub: '24 Ayar Has', buy: 7115.50, sell: 7195.20, change: 1.45, category: 'altin' },
-  { id: 'CA', name: 'Çeyrek Altın', sub: 'Yeni Tarihli', buy: 11620.00, sell: 11745.00, change: 1.28, category: 'altin' },
-  { id: 'YA', name: 'Yarım Altın', sub: 'Darphane', buy: 23240.00, sell: 23490.00, change: 1.25, category: 'altin' },
-  { id: 'TA', name: 'Tam Altın', sub: 'Cumhuriyet', buy: 46200.00, sell: 46750.00, change: 1.30, category: 'altin' },
-  { id: 'USD', name: 'Amerikan Doları', sub: 'USD / TRY', buy: 48.05, sell: 48.12, change: 0.18, category: 'doviz' },
-  { id: 'EUR', name: 'Euro', sub: 'EUR / TRY', buy: 55.90, sell: 56.10, change: -0.12, category: 'doviz' },
-  { id: 'GBP', name: 'ngiliz Sterlini', sub: 'GBP / TRY', buy: 65.40, sell: 65.75, change: 0.32, category: 'doviz' },
-  { id: 'BTC', name: 'Bitcoin', sub: 'BTC / TRY', buy: 3810000.00, sell: 3825000.00, change: 2.15, category: 'kripto' },
+  { id: 'GA', name: 'Gram Altın', description: '24 Ayar Saf Altın', buy: 7115.50, sell: 7195.20, change: 1.45 },
+  { id: 'CA', name: 'Çeyrek Altın', description: 'Yeni Tarihli Darphane', buy: 11620.00, sell: 11745.00, change: 1.28 },
+  { id: 'YA', name: 'Yarım Altın', description: 'T.C. Darphane Baskı', buy: 23240.00, sell: 23490.00, change: 1.25 },
+  { id: 'TA', name: 'Tam Altın', description: 'Cumhuriyet Altını', buy: 46200.00, sell: 46750.00, change: 1.30 },
+  { id: 'USD', name: 'Amerikan Doları', description: 'Dolar / Türk Lirası', buy: 48.05, sell: 48.12, change: 0.18 },
+  { id: 'EUR', name: 'Euro', description: 'Euro / Türk Lirası', buy: 55.90, sell: 56.10, change: -0.12 },
+  { id: 'GBP', name: 'ngiliz Sterlini', description: 'Sterlin / Türk Lirası', buy: 65.40, sell: 65.75, change: 0.32 },
+  { id: 'BTC', name: 'Bitcoin', description: 'Kripto Para / TRY', buy: 3810000.00, sell: 3825000.00, change: 2.15 },
 ];
 
 export default function FinanceRobotApp() {
-  const [activeCategory, setActiveCategory] = useState<'tumu' | 'altin' | 'doviz' | 'kripto'>('tumu');
-  const [calcAmount, setCalcAmount] = useState<number>(100);
-  const [selectedId, setSelectedId] = useState<string>('USD');
+  const [calcAmount, setCalcAmount] = useState<number>(1);
+  const [selectedId, setSelectedId] = useState<string>('GA');
 
   const selectedItem = useMemo(() => {
     return kurListesi.find(r => r.id === selectedId) || kurListesi[0];
@@ -41,11 +39,6 @@ export default function FinanceRobotApp() {
   const calculatedTotal = useMemo(() => {
     return (calcAmount * selectedItem.sell).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }, [calcAmount, selectedItem]);
-
-  const filteredRates = useMemo(() => {
-    if (activeCategory === 'tumu') return kurListesi;
-    return kurListesi.filter(item => item.category === activeCategory);
-  }, [activeCategory]);
 
   return (
     <main style={{ minHeight: '100vh', backgroundColor: '#05070f', color: '#f8fafc', fontFamily: 'system-ui, -apple-system, sans-serif', position: 'relative', overflowX: 'hidden' }}>
@@ -86,17 +79,17 @@ export default function FinanceRobotApp() {
         margin: '0 auto',
         padding: '24px 24px 80px 24px',
         display: 'grid',
-        gridTemplateColumns: 'minmax(340px, 460px) 1fr',
+        gridTemplateColumns: 'minmax(340px, 480px) 1fr',
         gap: '40px',
         pointerEvents: 'none'
       }}>
         
-        {/* Sol Panel: Kontroller & Liste */}
+        {/* Sol Panel: Çevirici ve Türkçe Kur Tablosu */}
         <div style={{ pointerEvents: 'auto' }}>
           
-          <div style={{ marginBottom: '18px' }}>
+          <div style={{ marginBottom: '16px' }}>
             <span style={{ padding: '5px 12px', borderRadius: '9999px', background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.35)', color: '#38bdf8', fontSize: '0.8rem', fontWeight: 'bold' }}>
-              ● Canlı Piyasa & Kapalıçarşı
+              Canlı Serbest Piyasa
             </span>
             <h1 style={{ margin: '10px 0 4px 0', fontSize: '2.1rem', fontWeight: '900', letterSpacing: '-0.02em', background: 'linear-gradient(135deg, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Akıllı Kur Çevirici
@@ -105,13 +98,13 @@ export default function FinanceRobotApp() {
 
           {/* Hesaplama Kartı */}
           <div style={{
-            background: 'rgba(15, 23, 42, 0.85)',
+            background: 'rgba(15, 23, 42, 0.88)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '1px solid rgba(255, 255, 255, 0.12)',
             borderRadius: '20px',
             padding: '20px',
-            marginBottom: '18px',
+            marginBottom: '16px',
             boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
           }}>
             <div style={{ display: 'flex', gap: '10px', marginBottom: '14px' }}>
@@ -127,14 +120,14 @@ export default function FinanceRobotApp() {
               </div>
 
               <div style={{ flex: 1.6 }}>
-                <label style={{ display: 'block', fontSize: '0.78rem', color: '#94a3b8', marginBottom: '6px', fontWeight: 'bold' }}>DÖVZ / ALTIN TÜRÜ</label>
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#94a3b8', marginBottom: '6px', fontWeight: 'bold' }}>ALTIN VEYA DÖVZ TÜRÜ</label>
                 <select
                   value={selectedId}
                   onChange={(e) => setSelectedId(e.target.value)}
                   style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.15)', backgroundColor: '#090d16', color: '#fff', fontSize: '0.92rem', fontWeight: '600', cursor: 'pointer', outline: 'none', boxSizing: 'border-box' }}
                 >
                   {kurListesi.map(r => (
-                    <option key={r.id} value={r.id}>{r.name} ({r.id})</option>
+                    <option key={r.id} value={r.id}>{r.name}</option>
                   ))}
                 </select>
               </div>
@@ -151,49 +144,20 @@ export default function FinanceRobotApp() {
               alignItems: 'center'
             }}>
               <div>
-                <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', fontWeight: 'bold' }}>HESAPLANAN TL TUTARI</span>
-                <strong style={{ fontSize: '1.55rem', color: '#38bdf8' }}>{calculatedTotal}</strong>
+                <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', fontWeight: 'bold' }}>TOPLAM TÜRK LRASI TUTARI</span>
+                <strong style={{ fontSize: '1.6rem', color: '#38bdf8' }}>{calculatedTotal}</strong>
               </div>
-              <span style={{ fontSize: '1.5rem' }}>⚡</span>
             </div>
           </div>
 
-          {/* Kategori Butonları */}
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
-            {[
-              { id: 'tumu', label: 'Tümü' },
-              { id: 'altin', label: 'Altın' },
-              { id: 'doviz', label: 'Döviz' },
-              { id: 'kripto', label: 'Kripto' },
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveCategory(tab.id as any)}
-                style={{
-                  padding: '7px 16px',
-                  borderRadius: '10px',
-                  border: activeCategory === tab.id ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.08)',
-                  backgroundColor: activeCategory === tab.id ? 'rgba(56, 189, 248, 0.2)' : 'rgba(15, 23, 42, 0.7)',
-                  color: activeCategory === tab.id ? '#38bdf8' : '#94a3b8',
-                  fontSize: '0.82rem',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Kur Kartları Listesi */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px', maxHeight: '380px', overflowY: 'auto', paddingRight: '4px' }}>
-            {filteredRates.map((item) => (
+          {/* Türkçe Kur Kartları Listesi (Kısaltmasız ve Net) */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px', maxHeight: '420px', overflowY: 'auto', paddingRight: '4px' }}>
+            {kurListesi.map((item) => (
               <div
                 key={item.id}
                 onClick={() => setSelectedId(item.id)}
                 style={{
-                  backgroundColor: selectedId === item.id ? 'rgba(30, 41, 59, 0.95)' : 'rgba(15, 23, 42, 0.75)',
+                  backgroundColor: selectedId === item.id ? 'rgba(30, 41, 59, 0.95)' : 'rgba(15, 23, 42, 0.8)',
                   backdropFilter: 'blur(16px)',
                   border: selectedId === item.id ? '1.5px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
                   borderRadius: '14px',
@@ -207,7 +171,7 @@ export default function FinanceRobotApp() {
               >
                 <div>
                   <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: '800', color: '#f8fafc' }}>{item.name}</h4>
-                  <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: '600' }}>{item.sub}</span>
+                  <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: '500' }}>{item.description}</span>
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
@@ -215,7 +179,7 @@ export default function FinanceRobotApp() {
                     {item.sell.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
                   </div>
                   <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: item.change >= 0 ? '#34d399' : '#f87171' }}>
-                    {item.change >= 0 ? `▲ %${item.change}` : `▼ %${Math.abs(item.change)}`}
+                    {item.change >= 0 ? `▲ %${item.change} Artış` : `▼ %${Math.abs(item.change)} Düşüş`}
                   </span>
                 </div>
               </div>
@@ -224,7 +188,7 @@ export default function FinanceRobotApp() {
 
         </div>
 
-        {/* Sağ Panel: Robotun Üzerinde Duran Canlı Konuşma Baloncuğu */}
+        {/* Sağ Panel: Konuşma Baloncuğu */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: '10px' }}>
           <div style={{
             maxWidth: '360px',
@@ -240,10 +204,10 @@ export default function FinanceRobotApp() {
             animation: 'floatingBubble 4s ease-in-out infinite alternate'
           }}>
             <div style={{ fontSize: '0.8rem', color: '#38bdf8', fontWeight: '800', letterSpacing: '0.05em', marginBottom: '4px' }}>
-              🤖 AI HESAP ASSTANI
+              YAPAY ZEKA FNANS ASSTANI
             </div>
             <div style={{ fontSize: '1.1rem', color: '#f8fafc', fontWeight: '800', lineHeight: '1.4' }}>
-              {calcAmount} {selectedItem.name} = <span style={{ color: '#38bdf8' }}>{calculatedTotal}</span>
+              {calcAmount} Adet {selectedItem.name} = <span style={{ color: '#38bdf8' }}>{calculatedTotal}</span>
             </div>
           </div>
         </div>
