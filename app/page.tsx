@@ -12,13 +12,13 @@ interface Kur {
 }
 
 const veriler: Kur[] = [
-  { id: 'GA', ad: 'Gram Altın', detay: '24 Ayar Saf Altın', satis: 7195.20, degisim: 1.45 },
-  { id: 'CA', ad: 'Çeyrek Altın', detay: 'Yeni Tarihli Darphane', satis: 11745.00, degisim: 1.28 },
-  { id: 'YA', ad: 'Yarım Altın', detay: 'Darphane Baskı Altın', satis: 23490.00, degisim: 1.25 },
-  { id: 'TA', ad: 'Tam Altın', detay: 'Cumhuriyet Altını', satis: 46750.00, degisim: 1.30 },
-  { id: 'USD', ad: 'Amerikan Doları', detay: 'Dolar / TRY', satis: 48.12, degisim: 0.18 },
-  { id: 'EUR', ad: 'Euro', detay: 'Euro / TRY', satis: 56.10, degisim: -0.12 },
-  { id: 'GBP', ad: 'ngiliz Sterlini', detay: 'Sterlin / TRY', satis: 65.75, degisim: 0.32 },
+  { id: 'GA', ad: 'Gram Altin', detay: '24 Ayar Saf Altin', satis: 7195.20, degisim: 1.45 },
+  { id: 'CA', ad: 'Ceyrek Altin', detay: 'Yeni Tarihli Darphane', satis: 11745.00, degisim: 1.28 },
+  { id: 'YA', ad: 'Yarim Altin', detay: 'Darphane Baski', satis: 23490.00, degisim: 1.25 },
+  { id: 'TA', ad: 'Tam Altin', detay: 'Cumhuriyet Altini', satis: 46750.00, degisim: 1.30 },
+  { id: 'USD', ad: 'Amerikan Dolari', detay: 'Dolar / TRY', satis: 48.12, degisim: 0.18 },
+  { id: 'EUR', ad: 'Euro', detay: 'Avrupa Para Birimi', satis: 56.10, degisim: -0.12 },
+  { id: 'GBP', ad: 'Ingiliz Sterlini', detay: 'Sterlin / TRY', satis: 65.75, degisim: 0.32 },
   { id: 'BTC', ad: 'Bitcoin', detay: 'Kripto Para / TRY', satis: 3825000.00, degisim: 2.15 },
 ];
 
@@ -57,29 +57,29 @@ export default function Home() {
               <span style={{ color: '#94a3b8', marginRight: '6px' }}>{r.ad}:</span>
               <strong style={{ color: '#f8fafc' }}>{r.satis.toLocaleString('tr-TR')} TL</strong>
               <span style={{ marginLeft: '6px', color: r.degisim >= 0 ? '#34d399' : '#f87171', fontWeight: 'bold' }}>
-                {r.degisim >= 0 ? `▲ %${r.degisim}` : `▼ %${Math.abs(r.degisim)}`}
+                {r.degisim >= 0 ? `+ %${r.degisim}` : `- %${Math.abs(r.degisim)}`}
               </span>
             </span>
           ))}
         </div>
       </div>
 
-      <div style={{ position: 'relative', zIndex: 10, maxWidth: '1440px', margin: '0 auto', padding: '24px 20px 80px 20px', display: 'grid', gridTemplateColumns: 'minmax(340px, 480px) 1fr', gap: '40px', pointerEvents: 'none' }}>
+      <div style={{ position: 'relative', zIndex: 10, maxWidth: '1440px', margin: '0 auto', padding: '24px 20px 80px 20px', display: 'grid', gridTemplateColumns: 'minmax(330px, 480px) 1fr', gap: '40px', pointerEvents: 'none' }}>
         
         <div style={{ pointerEvents: 'auto' }}>
           <div style={{ marginBottom: '16px' }}>
             <span style={{ padding: '5px 12px', borderRadius: '9999px', background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.35)', color: '#38bdf8', fontSize: '0.8rem', fontWeight: 'bold' }}>
-              Canlı Serbest Piyasa
+              Canli Finans Takibi
             </span>
             <h1 style={{ margin: '10px 0 4px 0', fontSize: '2.1rem', fontWeight: '900', letterSpacing: '-0.02em', background: 'linear-gradient(135deg, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              Akıllı Kur Çevirici
+              Akilli Kur Cevirici
             </h1>
           </div>
 
           <div style={{ background: 'rgba(15, 23, 42, 0.88)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '20px', marginBottom: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
             <div style={{ display: 'flex', gap: '10px', marginBottom: '14px' }}>
               <div style={{ flex: 1 }}>
-                <label style={{ display: 'block', fontSize: '0.78rem', color: '#94a3b8', marginBottom: '6px', fontWeight: 'bold' }}>MKTAR</label>
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#94a3b8', marginBottom: '6px', fontWeight: 'bold' }}>MIKTAR</label>
                 <input
                   type="number"
                   min="1"
@@ -90,7 +90,7 @@ export default function Home() {
               </div>
 
               <div style={{ flex: 1.6 }}>
-                <label style={{ display: 'block', fontSize: '0.78rem', color: '#94a3b8', marginBottom: '6px', fontWeight: 'bold' }}>ALTIN VEYA DÖVZ TÜRÜ</label>
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#94a3b8', marginBottom: '6px', fontWeight: 'bold' }}>BIRIM SECIN</label>
                 <select
                   value={secilen}
                   onChange={(e) => setSecilen(e.target.value)}
@@ -105,7 +105,7 @@ export default function Home() {
 
             <div style={{ padding: '14px 18px', borderRadius: '14px', background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(99, 102, 241, 0.2))', border: '1px solid rgba(56, 189, 248, 0.4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', fontWeight: 'bold' }}>TOPLAM TÜRK LRASI TUTARI</span>
+                <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', fontWeight: 'bold' }}>HESAPLANAN TOPLAM TUTAR</span>
                 <strong style={{ fontSize: '1.6rem', color: '#38bdf8' }}>{toplam} TL</strong>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function Home() {
                     {item.satis.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} TL
                   </div>
                   <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: item.degisim >= 0 ? '#34d399' : '#f87171' }}>
-                    {item.degisim >= 0 ? `▲ %${item.degisim} Artış` : `▼ %${Math.abs(item.degisim)} Düşüş`}
+                    {item.degisim >= 0 ? `+ %${item.degisim}` : `- %${Math.abs(item.degisim)}`}
                   </span>
                 </div>
               </div>
@@ -150,7 +150,7 @@ export default function Home() {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: '10px' }}>
           <div style={{ maxWidth: '360px', background: 'rgba(15, 23, 42, 0.92)', backdropFilter: 'blur(24px)', border: '1.5px solid rgba(56, 189, 248, 0.5)', padding: '16px 20px', borderRadius: '20px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', textAlign: 'center', pointerEvents: 'auto' }}>
             <div style={{ fontSize: '0.8rem', color: '#38bdf8', fontWeight: '800', letterSpacing: '0.05em', marginBottom: '4px' }}>
-              YAPAY ZEKA FNANS ASSTANI
+              YAPAY ZEKA FINANS ASISTANI
             </div>
             <div style={{ fontSize: '1.1rem', color: '#f8fafc', fontWeight: '800', lineHeight: '1.4' }}>
               {miktar} Adet {aktifKur.ad} = <span style={{ color: '#38bdf8' }}>{toplam} TL</span>
