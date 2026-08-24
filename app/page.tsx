@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Script from 'next/script';
 
 interface RateItem {
@@ -28,6 +28,7 @@ export default function FinanceRobotApp() {
   const [selectedCurrency, setSelectedCurrency] = useState<string>('USD');
   const [isThinking, setIsThinking] = useState<boolean>(false);
   const [robotSpeech, setRobotSpeech] = useState<string>('');
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const selectedItem = rates.find(r => r.code === selectedCurrency) || rates[0];
   const calculatedTotal = (calcAmount * selectedItem.sell).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -42,18 +43,31 @@ export default function FinanceRobotApp() {
     return () => clearTimeout(timer);
   }, [calcAmount, selectedCurrency]);
 
+  // Fare hareketini tüm pencerede takip edip 3D açı hesaplama
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 2; // -1 ile 1 arası
+      const y = (e.clientY / innerHeight - 0.5) * 2; // -1 ile 1 arası
+      setMousePos({ x, y });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    <main style={{ minHeight: '100vh', backgroundColor: '#060813', color: '#f8fafc', fontFamily: 'system-ui, -apple-system, sans-serif', position: 'relative' }}>
+    <main style={{ minHeight: '100vh', backgroundColor: '#060813', color: '#f8fafc', fontFamily: 'system-ui, -apple-system, sans-serif', position: 'relative', overflowX: 'hidden' }}>
       
-      {/* Spline Viewer Scripti */}
+      {/* Spline Viewer Kütüphanesi */}
       <Script 
         src="https://unpkg.com/@splinetool/viewer@latest/build/spline-viewer.js" 
         strategy="beforeInteractive" 
         type="module"
       />
 
-      {/* Üst Canlı Şerit */}
-      <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.95)', borderBottom: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden', whiteSpace: 'nowrap', padding: '10px 0' }}>
+      {/* Üst Canlı Kayan Şerit */}
+      <div style={{ position: 'relative', zIndex: 20, backgroundColor: 'rgba(15, 23, 42, 0.95)', borderBottom: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden', whiteSpace: 'nowrap', padding: '10px 0' }}>
         <div style={{ display: 'inline-block', animation: 'marquee 22s linear infinite' }}>
           {rates.map((r, i) => (
             <span key={i} style={{ margin: '0 18px', fontSize: '0.88rem' }}>
@@ -68,10 +82,10 @@ export default function FinanceRobotApp() {
       </div>
 
       {/* Ana Grid Alanı */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '30px', alignItems: 'center' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '30px', alignItems: 'center', position: 'relative', zIndex: 10 }}>
         
         {/* Sol Taraf: Hesaplama & Kurlar */}
-        <div>
+        <div style={{ zIndex: 15 }}>
           <div style={{ marginBottom: '20px' }}>
             <span style={{ padding: '4px 12px', borderRadius: '9999px', background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)', color: '#38bdf8', fontSize: '0.8rem', fontWeight: 'bold' }}>
               ⚡ Canlı Finans Botu
@@ -82,7 +96,7 @@ export default function FinanceRobotApp() {
           </div>
 
           {/* Hesaplama Kutusu */}
-          <div style={{ background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '20px', marginBottom: '20px' }}>
+          <div style={{ background: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '20px', padding: '20px', marginBottom: '20px' }}>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '14px' }}>
               <div style={{ flex: 1 }}>
                 <label style={{ display: 'block', fontSize: '0.78rem', color: '#94a3b8', marginBottom: '4px' }}>MKTAR</label>
@@ -123,11 +137,12 @@ export default function FinanceRobotApp() {
                 key={item.code}
                 onClick={() => setSelectedCurrency(item.code)}
                 style={{
-                  backgroundColor: selectedCurrency === item.code ? 'rgba(30, 41, 59, 0.9)' : 'rgba(15, 23, 42, 0.6)',
+                  backgroundColor: selectedCurrency === item.code ? 'rgba(30, 41, 59, 0.95)' : 'rgba(15, 23, 42, 0.7)',
                   border: selectedCurrency === item.code ? '1.5px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
                   borderRadius: '12px',
                   padding: '12px',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: '700', marginBottom: '4px' }}>
@@ -142,21 +157,23 @@ export default function FinanceRobotApp() {
           </div>
         </div>
 
-        {/* Sağ Taraf: 3D Robot ve Konuşma Baloncuğu */}
+        {/* Sağ Taraf: Farenin Yönüne Göre Eğilen & Bakan 3D Robot */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
           
-          {/* Robotun Mesaj Balonu */}
+          {/* Robot Mesaj Balonu */}
           <div style={{
             width: '100%',
             maxWidth: '380px',
-            background: 'rgba(15, 23, 42, 0.9)',
+            background: 'rgba(15, 23, 42, 0.92)',
             backdropFilter: 'blur(20px)',
             border: '1px solid rgba(56, 189, 248, 0.4)',
             padding: '18px 22px',
             borderRadius: '20px',
             boxShadow: '0 15px 35px rgba(0,0,0,0.5)',
             marginBottom: '10px',
-            textAlign: 'center'
+            textAlign: 'center',
+            transform: `translate3d(${mousePos.x * 6}px, ${mousePos.y * 4}px, 0)`,
+            transition: 'transform 0.15s ease-out'
           }}>
             <div style={{ fontSize: '0.85rem', color: '#38bdf8', fontWeight: 'bold', marginBottom: '4px' }}>
               🤖 AI HESAP ASSTANI
@@ -166,8 +183,19 @@ export default function FinanceRobotApp() {
             </div>
           </div>
 
-          {/* 3D Spline Robot Alanı (Yüksekliği ve Genişliği Sabit) */}
-          <div style={{ width: '100%', height: '480px', position: 'relative', borderRadius: '24px', overflow: 'hidden' }}>
+          {/* 3D Spline Robot Kutusu */}
+          <div 
+            style={{ 
+              width: '100%', 
+              height: '520px', 
+              position: 'relative', 
+              borderRadius: '24px', 
+              overflow: 'hidden',
+              perspective: '1000px',
+              transform: `rotateY(${mousePos.x * 12}deg) rotateX(${-mousePos.y * 10}deg)`,
+              transition: 'transform 0.1s ease-out'
+            }}
+          >
             {/* @ts-expect-error spline-viewer web component */}
             <spline-viewer 
               url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" 
