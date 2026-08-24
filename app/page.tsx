@@ -13,7 +13,7 @@ interface KurItem {
 }
 
 const varsayilanKurlar: KurItem[] = [
-  { id: 'GA', ad: 'Gram Altin', aciklama: '24 Ayar Saf Altin', satis: 7195.20, degisim: 1.45, ikon: '🪙' },
+  { id: 'GA', ad: 'Gram Altin', aciklama: '24 Ayar Saf Altin', satis: 7205.40, degisim: 1.45, ikon: '🪙' },
   { id: 'CA', ad: 'Ceyrek Altin', aciklama: 'Darphane Baski', satis: 11745.00, degisim: 1.28, ikon: '🥇' },
   { id: 'YA', ad: 'Yarim Altin', aciklama: 'Darphane Baski', satis: 23490.00, degisim: 1.25, ikon: '🏆' },
   { id: 'TA', ad: 'Tam Altin', aciklama: 'Cumhuriyet Altini', satis: 46750.00, degisim: 1.30, ikon: '👑' },
@@ -27,63 +27,28 @@ export default function MobileFastFinanceApp() {
   const [kurListesi, setKurListesi] = useState<KurItem[]>(varsayilanKurlar);
   const [miktar, setMiktar] = useState<number>(1);
   const [secilenId, setSecilenId] = useState<string>('GA');
-  const [sonGuncelleme, setSonGuncelleme] = useState<string>('Yükleniyor...');
+  const [sonGuncelleme, setSonGuncelleme] = useState<string>('Guncelleniyor...');
   const [yukleniyor, setYukleniyor] = useState<boolean>(false);
 
-  // Canlı Fiyatları API'den Çekme
   const fiyatlariGetir = useCallback(async () => {
     try {
       setYukleniyor(true);
-      // Canlı Döviz Kurları (USD tabanlı)
-      const resDoviz = await fetch('https://open.er-api.com/v6/latest/USD');
-      const dataDoviz = await resDoviz.json();
-
-      // Canlı Bitcoin Fiyatı
-      const resBtc = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=try,usd');
-      const dataBtc = await resBtc.json();
-
-      if (dataDoviz && dataDoviz.rates) {
-        const usdTry = dataDoviz.rates.TRY || 48.12;
-        const eurRate = dataDoviz.rates.EUR || 0.85;
-        const gbpRate = dataDoviz.rates.GBP || 0.73;
-
-        const eurTry = usdTry / eurRate;
-        const gbpTry = usdTry / gbpRate;
-        const btcTry = dataBtc?.bitcoin?.try || (dataBtc?.bitcoin?.usd ? dataBtc.bitcoin.usd * usdTry : 3825000);
-
-        // Canlı Altın Hesaplaması (Ons Altın ~ $4.650 kabulüyle dinamik TL has altın)
-        const gramAltin = (4650 / 31.1034768) * usdTry;
-        const ceyrekAltin = gramAltin * 1.63;
-        const yarimAltin = gramAltin * 3.26;
-        const tamAltin = gramAltin * 6.52;
-
-        setKurListesi([
-          { id: 'GA', ad: 'Gram Altin', aciklama: '24 Ayar Saf Altin', satis: gramAltin, degisim: 1.45, ikon: '🪙' },
-          { id: 'CA', ad: 'Ceyrek Altin', aciklama: 'Darphane Baski', satis: ceyrekAltin, degisim: 1.28, ikon: '🥇' },
-          { id: 'YA', ad: 'Yarim Altin', aciklama: 'Darphane Baski', satis: yarimAltin, degisim: 1.25, ikon: '🏆' },
-          { id: 'TA', ad: 'Tam Altin', aciklama: 'Cumhuriyet Altini', satis: tamAltin, degisim: 1.30, ikon: '👑' },
-          { id: 'USD', ad: 'Amerikan Dolari', aciklama: 'Dolar Kuru (USD)', satis: usdTry, degisim: 0.18, ikon: '💵' },
-          { id: 'EUR', ad: 'Euro', aciklama: 'Avrupa Kuru (EUR)', satis: eurTry, degisim: -0.12, ikon: '💶' },
-          { id: 'GBP', ad: 'Ingiliz Sterlini', aciklama: 'Sterlin Kuru (GBP)', satis: gbpTry, degisim: 0.32, ikon: '💷' },
-          { id: 'BTC', ad: 'Bitcoin', aciklama: 'Kripto Para (BTC)', satis: btcTry, degisim: 2.15, ikon: '₿' },
-        ]);
-
-        const saat = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        setSonGuncelleme(saat);
+      const res = await fetch('/api/kurlar');
+      const data = await res.json();
+      if (data && data.success && data.kurlar) {
+        setKurListesi(data.kurlar);
+        setSonGuncelleme(data.zaman || new Date().toLocaleTimeString('tr-TR'));
       }
     } catch {
-      // Bağlantı hatasında mevcut kurlarla devam et
-      const saat = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-      setSonGuncelleme(`${saat} (Piyasa)`);
+      setSonGuncelleme(new Date().toLocaleTimeString('tr-TR'));
     } finally {
       setYukleniyor(false);
     }
   }, []);
 
-  // Sayfa açıldığında ve her 30 saniyede bir otomatik güncelle
   useEffect(() => {
     fiyatlariGetir();
-    const interval = setInterval(fiyatlariGetir, 30000);
+    const interval = setInterval(fiyatlariGetir, 15000);
     return () => clearInterval(interval);
   }, [fiyatlariGetir]);
 
@@ -104,14 +69,13 @@ export default function MobileFastFinanceApp() {
       />
 
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1, opacity: 0.85, pointerEvents: 'auto' }}>
-        {/* @ts-expect-error custom element */}
+        {/* @ts-expect-error spline component */}
         <spline-viewer 
           url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" 
           style={{ width: '100%', height: '100%' }}
         />
       </div>
 
-      {/* Üst Canlı Borsa Kayan Bandı */}
       <div style={{ position: 'relative', zIndex: 20, backgroundColor: 'rgba(10, 15, 30, 0.94)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden', whiteSpace: 'nowrap', padding: '10px 0', pointerEvents: 'none' }}>
         <div style={{ display: 'inline-block', animation: 'kayanBant 25s linear infinite' }}>
           {kurListesi.map((r, i) => (
@@ -139,7 +103,6 @@ export default function MobileFastFinanceApp() {
               </h1>
             </div>
 
-            {/* Canlı Güncelleme Durum Rozeti & Yenileme Butonu */}
             <button
               onClick={fiyatlariGetir}
               style={{
@@ -155,12 +118,11 @@ export default function MobileFastFinanceApp() {
                 cursor: 'pointer'
               }}
             >
-              <span style={{ display: 'inline-block', animation: yukleniyor ? 'spin 1s linear infinite' : 'none' }}>🔄</span>
+              <span style={{ display: 'inline-block', animation: yukleniyor ? 'donme 1s linear infinite' : 'none' }}>🔄</span>
               <span>{sonGuncelleme}</span>
             </button>
           </div>
 
-          {/* Hesaplama Kartı */}
           <div style={{ background: 'rgba(15, 23, 42, 0.88)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '18px', padding: '16px', marginBottom: '16px', boxShadow: '0 15px 35px rgba(0,0,0,0.5)' }}>
             <div className="input-grid">
               <div>
@@ -197,7 +159,6 @@ export default function MobileFastFinanceApp() {
             </div>
           </div>
 
-          {/* Tam Metin Canlı Kur Listesi */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '360px', overflowY: 'auto', paddingRight: '2px' }}>
             {kurListesi.map((item) => (
               <div
@@ -256,7 +217,7 @@ export default function MobileFastFinanceApp() {
           0% { transform: translateX(0%); }
           100% { transform: translateX(-50%); }
         }
-        @keyframes spin {
+        @keyframes donme {
           100% { transform: rotate(360deg); }
         }
         .main-container {
