@@ -1,20 +1,8 @@
 ﻿'use client';
 
-import { useEffect, useState } from 'react';
-
-interface Particle {
-  id: number;
-  left: number;
-  emoji: string;
-  size: number;
-  duration: number;
-  drift: number;
-}
+import { useEffect } from 'react';
 
 export default function Home() {
-  const [given, setGiven] = useState(false);
-  const [particles, setParticles] = useState<Particle[]>([]);
-
   useEffect(() => {
     const script = document.createElement('script');
     script.type = 'module';
@@ -28,163 +16,161 @@ export default function Home() {
     };
   }, []);
 
-  const handleRobotGivesFlower = () => {
-    setGiven(true);
-
-    const emojis = ['🌸', '💐', '🌹', '💖', '✨', '🌷', '💝', '✨'];
-    const newParticles: Particle[] = [];
-
-    for (let i = 0; i < 35; i++) {
-      newParticles.push({
-        id: Date.now() + i,
-        left: 50 + (Math.random() * 20 - 10),
-        emoji: emojis[Math.floor(Math.random() * emojis.length)],
-        size: Math.random() * 1.6 + 1.2,
-        duration: Math.random() * 1.5 + 2.2,
-        drift: Math.random() * 200 - 100
-      });
-    }
-
-    setParticles(newParticles);
-  };
-
   return (
-    <main style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', backgroundColor: '#06060c', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <main style={{ position: 'relative', width: '100vw', minHeight: '100vh', overflowX: 'hidden', backgroundColor: '#050508', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       
-      {/* 3D Spline Robot Sahnesi */}
+      {/* 3D Robot */}
       {/* @ts-expect-error spline-viewer is a web component */}
       <spline-viewer 
         url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" 
-        style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1 }}
+        style={{ width: '100%', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 1 }}
       />
 
-      {/* Robotun Elinde Sabit Duran Çiçek Buketi (Tıklamadan Önce & Sonra) */}
-      <div style={{
-        position: 'absolute',
-        top: '52%',
-        left: '50%',
-        transform: given 
-          ? 'translate(-50%, -65%) scale(1.6) rotate(10deg)' 
-          : 'translate(-38%, -35%) scale(1) rotate(-15deg)',
-        zIndex: 10,
-        pointerEvents: 'none',
-        fontSize: '4.5rem',
-        transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-        filter: given 
-          ? 'drop-shadow(0 0 35px rgba(244, 114, 182, 0.9))' 
-          : 'drop-shadow(0 8px 16px rgba(0,0,0,0.6))',
-        animation: given ? 'pulseGlow 2s infinite alternate' : 'subtleFloat 3s ease-in-out infinite alternate'
-      }}>
-        💐
-      </div>
-
-      {/* Robotun Mesaj Balonu */}
-      <div style={{
-        position: 'absolute',
-        top: '8%',
-        left: '50%',
-        transform: given ? 'translateX(-50%) scale(1)' : 'translateX(-50%) scale(0.8)',
-        opacity: given ? 1 : 0,
-        zIndex: 25,
-        pointerEvents: 'none',
-        transition: 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-        width: '90%',
-        maxWidth: '480px'
-      }}>
-        <div style={{
-          background: 'rgba(20, 15, 30, 0.7)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1.5px solid rgba(244, 114, 182, 0.5)',
-          padding: '22px 28px',
-          borderRadius: '26px',
-          boxShadow: '0 20px 50px rgba(236, 72, 153, 0.35)',
-          textAlign: 'center',
-          position: 'relative'
-        }}>
-          <div style={{ fontSize: '2.2rem', marginBottom: '4px' }}>🤖💐✨</div>
-          <h2 style={{ margin: '0 0 6px 0', fontSize: '1.5rem', color: '#fff', fontWeight: '800', textShadow: '0 2px 10px rgba(0,0,0,0.6)' }}>
-            Bunlar Senin çin Ezgi! 🌸
-          </h2>
-          <p style={{ margin: 0, fontSize: '1rem', lineHeight: '1.5', color: '#fbcfe8' }}>
-            Umut bu çiçekleri sana vermem için beni özel olarak görevlendirdi! Dünyanın en güzel sevgilisi, iyi ki varsın 💖
-          </p>
-        </div>
-      </div>
-
-      {/* Alt Kısımdaki Buton */}
-      <div style={{
-        position: 'absolute',
-        bottom: '8%',
+      {/* Üst Navbar */}
+      <nav style={{
+        position: 'fixed',
+        top: '20px',
         left: '50%',
         transform: 'translateX(-50%)',
-        zIndex: 30,
+        width: '90%',
+        maxWidth: '1200px',
+        zIndex: 50,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '14px 28px',
+        background: 'rgba(15, 15, 25, 0.65)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '20px',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontWeight: '800', fontSize: '1.25rem' }}>
+          <span style={{ background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            NEXUS AI
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', gap: '24px', fontSize: '0.95rem', color: '#94a3b8', fontWeight: '500' }}>
+          <span style={{ color: '#cbd5e1' }}>Özellikler</span>
+          <span style={{ color: '#cbd5e1' }}>Modeller</span>
+          <span style={{ color: '#cbd5e1' }}>Entegrasyon</span>
+        </div>
+
+        <button style={{
+          padding: '10px 22px',
+          fontSize: '0.9rem',
+          fontWeight: '600',
+          color: '#fff',
+          background: 'linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)',
+          border: 'none',
+          borderRadius: '12px',
+          cursor: 'pointer'
+        }}>
+          Konsolu Aç
+        </button>
+      </nav>
+
+      {/* Hero Alanı */}
+      <section style={{
+        position: 'relative',
+        zIndex: 10,
+        minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        justifyContent: 'center',
+        padding: '0 8%',
+        pointerEvents: 'none'
       }}>
-        <button
-          onClick={handleRobotGivesFlower}
-          style={{
-            display: 'flex',
+        <div style={{ maxWidth: '560px', marginTop: '60px' }}>
+          <div style={{
+            display: 'inline-flex',
             alignItems: 'center',
-            gap: '12px',
-            padding: '16px 36px',
-            fontSize: '1.2rem',
-            fontWeight: '700',
-            color: '#fff',
-            background: given 
-              ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
-              : 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #f43f5e 100%)',
-            border: '1.5px solid rgba(255, 255, 255, 0.4)',
+            gap: '8px',
+            padding: '6px 14px',
             borderRadius: '9999px',
-            cursor: 'pointer',
-            boxShadow: '0 12px 35px rgba(236, 72, 153, 0.5)',
-            transition: 'all 0.3s ease',
-            outline: 'none'
-          }}
-          onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.94)')}
-          onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        >
-          <span>{given ? 'Çiçekler Teslim Edildi 💖' : 'Robottan Çiçeğini Al 🌸'}</span>
-          <span style={{ fontSize: '1.4rem' }}>{given ? '✨' : '🤖'}</span>
-        </button>
-      </div>
+            background: 'rgba(99, 102, 241, 0.15)',
+            border: '1px solid rgba(99, 102, 241, 0.3)',
+            color: '#a5b4fc',
+            fontSize: '0.85rem',
+            fontWeight: '600',
+            marginBottom: '20px'
+          }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#4ade80' }}></span>
+            Gelecek Nesil Otonom Zeka
+          </div>
 
-      {/* Patlayan Çiçekler */}
-      {particles.map((p) => (
-        <div
-          key={p.id}
-          style={{
-            position: 'absolute',
-            top: '48%',
-            left: `${p.left}%`,
-            zIndex: 18,
-            fontSize: `${p.size}rem`,
-            pointerEvents: 'none',
-            // @ts-expect-error css variable
-            '--drift': `${p.drift}px`,
-            animation: `burstOut ${p.duration}s cubic-bezier(0.25, 1, 0.5, 1) forwards`
-          }}
-        >
-          {p.emoji}
+          <h1 style={{
+            fontSize: '3.5rem',
+            fontWeight: '900',
+            lineHeight: '1.1',
+            letterSpacing: '-0.04em',
+            margin: '0 0 20px 0',
+            background: 'linear-gradient(180deg, #ffffff 0%, #94a3b8 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            Yapay Zekanın Yeni Boyutu.
+          </h1>
+
+          <p style={{
+            fontSize: '1.15rem',
+            lineHeight: '1.6',
+            color: '#94a3b8',
+            marginBottom: '32px'
+          }}>
+            Karmaşık veri modellerini anında işleyen, 3D etkileşimli ve gerçek zamanlı öğrenen yapay zeka altyapısı ile projelerinizi güçlendirin.
+          </p>
+
+          <div style={{ display: 'flex', gap: '16px', pointerEvents: 'auto' }}>
+            <button style={{
+              padding: '14px 30px',
+              fontSize: '1rem',
+              fontWeight: '700',
+              color: '#050508',
+              backgroundColor: '#fff',
+              border: 'none',
+              borderRadius: '12px',
+              cursor: 'pointer'
+            }}>
+              Hemen Deneyin →
+            </button>
+          </div>
         </div>
-      ))}
+      </section>
 
-      <style>{`
-        @keyframes subtleFloat {
-          0% { transform: translate(-38%, -35%) scale(1) rotate(-15deg); }
-          100% { transform: translate(-38%, -38%) scale(1.05) rotate(-10deg); }
-        }
-        @keyframes pulseGlow {
-          0% { filter: drop-shadow(0 0 25px rgba(244, 114, 182, 0.7)); }
-          100% { filter: drop-shadow(0 0 45px rgba(244, 114, 182, 1)); }
-        }
-        @keyframes burstOut {
-          0% { opacity: 1; transform: translate(0, 0) scale(0.5); }
-          100% { opacity: 0; transform: translate(var(--drift), -350px) scale(1.2) rotate(45deg); }
-        }
-      `}</style>
+      {/* Özellik Kartları */}
+      <section style={{
+        position: 'relative',
+        zIndex: 10,
+        padding: '0 8% 80px 8%',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '24px',
+        maxWidth: '1200px',
+        margin: '0 auto'
+      }}>
+        {[
+          { title: 'Otonom Çıkarım', desc: 'Saniyeler içinde yüksek hassasiyetli doğal dil ve veri analizleri.', icon: '⚡' },
+          { title: 'Gerçek Zamanlı 3D', desc: 'Etkileşimli ortamlar ve simülasyonlarla tam uyumlu derin öğrenme.', icon: '🌐' },
+          { title: 'Gelişmiş Güvenlik', desc: 'Uçtan uca şifrelenmiş veri akışı ve kurumsal veri gizliliği.', icon: '🛡️' }
+        ].map((feat, idx) => (
+          <div key={idx} style={{
+            background: 'rgba(15, 15, 25, 0.65)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            padding: '28px',
+            borderRadius: '20px'
+          }}>
+            <div style={{ fontSize: '2rem', marginBottom: '14px' }}>{feat.icon}</div>
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', fontWeight: '700', color: '#f8fafc' }}>{feat.title}</h3>
+            <p style={{ margin: 0, fontSize: '0.95rem', color: '#94a3b8', lineHeight: '1.5' }}>{feat.desc}</p>
+          </div>
+        ))}
+      </section>
+
     </main>
   );
 }
