@@ -8,42 +8,42 @@ const Spline = dynamic(() => import('@splinetool/react-spline'), {
   loading: () => <div style={{ width: '100%', height: '100%', backgroundColor: '#05070f' }} />
 });
 
-interface RateItem {
+interface KurElemani {
   id: string;
-  name: string;
-  description: string;
-  buy: number;
-  sell: number;
-  change: number;
+  ad: string;
+  aciklama: string;
+  alis: number;
+  satis: number;
+  degisim: number;
 }
 
-const kurListesi: RateItem[] = [
-  { id: 'GA', name: 'Gram Altın', description: '24 Ayar Saf Altın', buy: 7115.50, sell: 7195.20, change: 1.45 },
-  { id: 'CA', name: 'Çeyrek Altın', description: 'Yeni Tarihli Darphane', buy: 11620.00, sell: 11745.00, change: 1.28 },
-  { id: 'YA', name: 'Yarım Altın', description: 'T.C. Darphane Baskı', buy: 23240.00, sell: 23490.00, change: 1.25 },
-  { id: 'TA', name: 'Tam Altın', description: 'Cumhuriyet Altını', buy: 46200.00, sell: 46750.00, change: 1.30 },
-  { id: 'USD', name: 'Amerikan Doları', description: 'Dolar / Türk Lirası', buy: 48.05, sell: 48.12, change: 0.18 },
-  { id: 'EUR', name: 'Euro', description: 'Euro / Türk Lirası', buy: 55.90, sell: 56.10, change: -0.12 },
-  { id: 'GBP', name: 'ngiliz Sterlini', description: 'Sterlin / Türk Lirası', buy: 65.40, sell: 65.75, change: 0.32 },
-  { id: 'BTC', name: 'Bitcoin', description: 'Kripto Para / TRY', buy: 3810000.00, sell: 3825000.00, change: 2.15 },
+const kurListesi: KurElemani[] = [
+  { id: 'GA', ad: 'Gram Altın', aciklama: '24 Ayar Saf Altın', alis: 7115.50, satis: 7195.20, degisim: 1.45 },
+  { id: 'CA', ad: 'Çeyrek Altın', aciklama: 'Yeni Tarihli Darphane', alis: 11620.00, satis: 11745.00, degisim: 1.28 },
+  { id: 'YA', ad: 'Yarım Altın', aciklama: 'Darphane Baskı Altın', alis: 23240.00, satis: 23490.00, degisim: 1.25 },
+  { id: 'TA', ad: 'Tam Altın', aciklama: 'Cumhuriyet Altını', alis: 46200.00, satis: 46750.00, degisim: 1.30 },
+  { id: 'USD', ad: 'Amerikan Doları', aciklama: 'Dolar / Türk Lirası', alis: 48.05, satis: 48.12, degisim: 0.18 },
+  { id: 'EUR', ad: 'Euro', aciklama: 'Euro / Türk Lirası', alis: 55.90, satis: 56.10, degisim: -0.12 },
+  { id: 'GBP', ad: 'ngiliz Sterlini', aciklama: 'Sterlin / Türk Lirası', alis: 65.40, satis: 65.75, degisim: 0.32 },
+  { id: 'BTC', ad: 'Bitcoin', aciklama: 'Kripto Para / TRY', alis: 3810000.00, satis: 3825000.00, degisim: 2.15 },
 ];
 
-export default function FinanceRobotApp() {
-  const [calcAmount, setCalcAmount] = useState<number>(1);
-  const [selectedId, setSelectedId] = useState<string>('GA');
+export default function Home() {
+  const [miktar, setMiktar] = useState<number>(1);
+  const [secilenId, setSecilenId] = useState<string>('GA');
 
-  const selectedItem = useMemo(() => {
-    return kurListesi.find(r => r.id === selectedId) || kurListesi[0];
-  }, [selectedId]);
+  const secilenKur = useMemo(() => {
+    return kurListesi.find(k => k.id === secilenId) || kurListesi[0];
+  }, [secilenId]);
 
-  const calculatedTotal = useMemo(() => {
-    return (calcAmount * selectedItem.sell).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }, [calcAmount, selectedItem]);
+  const toplamTutar = useMemo(() => {
+    return (miktar * secilenKur.satis).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }, [miktar, secilenKur]);
 
   return (
     <main style={{ minHeight: '100vh', backgroundColor: '#05070f', color: '#f8fafc', fontFamily: 'system-ui, -apple-system, sans-serif', position: 'relative', overflowX: 'hidden' }}>
       
-      {/* 3D Spline Robot Tuvali */}
+      {/* 3D Robot */}
       <div style={{
         position: 'fixed',
         top: 0,
@@ -61,10 +61,10 @@ export default function FinanceRobotApp() {
         <div style={{ display: 'inline-block', animation: 'marquee 25s linear infinite' }}>
           {kurListesi.map((r, i) => (
             <span key={i} style={{ margin: '0 22px', fontSize: '0.88rem' }}>
-              <span style={{ color: '#94a3b8', marginRight: '6px' }}>{r.name}:</span>
-              <strong style={{ color: '#f8fafc' }}>{r.sell.toLocaleString('tr-TR')}</strong>
-              <span style={{ marginLeft: '6px', color: r.change >= 0 ? '#34d399' : '#f87171', fontWeight: 'bold' }}>
-                {r.change >= 0 ? `▲ %${r.change}` : `▼ %${Math.abs(r.change)}`}
+              <span style={{ color: '#94a3b8', marginRight: '6px' }}>{r.ad}:</span>
+              <strong style={{ color: '#f8fafc' }}>{r.satis.toLocaleString('tr-TR')}</strong>
+              <span style={{ marginLeft: '6px', color: r.degisim >= 0 ? '#34d399' : '#f87171', fontWeight: 'bold' }}>
+                {r.degisim >= 0 ? `▲ %${r.degisim}` : `▼ %${Math.abs(r.degisim)}`}
               </span>
             </span>
           ))}
@@ -84,7 +84,7 @@ export default function FinanceRobotApp() {
         pointerEvents: 'none'
       }}>
         
-        {/* Sol Panel: Çevirici ve Türkçe Kur Tablosu */}
+        {/* Sol Panel: Çevirici ve Türkçe Liste */}
         <div style={{ pointerEvents: 'auto' }}>
           
           <div style={{ marginBottom: '16px' }}>
@@ -113,8 +113,8 @@ export default function FinanceRobotApp() {
                 <input
                   type="number"
                   min="1"
-                  value={calcAmount}
-                  onChange={(e) => setCalcAmount(Math.max(1, Number(e.target.value)))}
+                  value={miktar}
+                  onChange={(e) => setMiktar(Math.max(1, Number(e.target.value)))}
                   style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.15)', backgroundColor: '#090d16', color: '#fff', fontSize: '1.15rem', fontWeight: 'bold', outline: 'none', boxSizing: 'border-box' }}
                 />
               </div>
@@ -122,12 +122,12 @@ export default function FinanceRobotApp() {
               <div style={{ flex: 1.6 }}>
                 <label style={{ display: 'block', fontSize: '0.78rem', color: '#94a3b8', marginBottom: '6px', fontWeight: 'bold' }}>ALTIN VEYA DÖVZ TÜRÜ</label>
                 <select
-                  value={selectedId}
-                  onChange={(e) => setSelectedId(e.target.value)}
+                  value={secilenId}
+                  onChange={(e) => setSecilenId(e.target.value)}
                   style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.15)', backgroundColor: '#090d16', color: '#fff', fontSize: '0.92rem', fontWeight: '600', cursor: 'pointer', outline: 'none', boxSizing: 'border-box' }}
                 >
                   {kurListesi.map(r => (
-                    <option key={r.id} value={r.id}>{r.name}</option>
+                    <option key={r.id} value={r.id}>{r.ad}</option>
                   ))}
                 </select>
               </div>
@@ -145,21 +145,21 @@ export default function FinanceRobotApp() {
             }}>
               <div>
                 <span style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', fontWeight: 'bold' }}>TOPLAM TÜRK LRASI TUTARI</span>
-                <strong style={{ fontSize: '1.6rem', color: '#38bdf8' }}>{calculatedTotal}</strong>
+                <strong style={{ fontSize: '1.6rem', color: '#38bdf8' }}>{toplamTutar}</strong>
               </div>
             </div>
           </div>
 
-          {/* Türkçe Kur Kartları Listesi (Kısaltmasız ve Net) */}
+          {/* Türkçe Net Kur Listesi */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px', maxHeight: '420px', overflowY: 'auto', paddingRight: '4px' }}>
             {kurListesi.map((item) => (
               <div
                 key={item.id}
-                onClick={() => setSelectedId(item.id)}
+                onClick={() => setSecilenId(item.id)}
                 style={{
-                  backgroundColor: selectedId === item.id ? 'rgba(30, 41, 59, 0.95)' : 'rgba(15, 23, 42, 0.8)',
+                  backgroundColor: secilenId === item.id ? 'rgba(30, 41, 59, 0.95)' : 'rgba(15, 23, 42, 0.8)',
                   backdropFilter: 'blur(16px)',
-                  border: selectedId === item.id ? '1.5px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
+                  border: secilenId === item.id ? '1.5px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
                   borderRadius: '14px',
                   padding: '12px 16px',
                   cursor: 'pointer',
@@ -170,16 +170,16 @@ export default function FinanceRobotApp() {
                 }}
               >
                 <div>
-                  <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: '800', color: '#f8fafc' }}>{item.name}</h4>
-                  <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: '500' }}>{item.description}</span>
+                  <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: '800', color: '#f8fafc' }}>{item.ad}</h4>
+                  <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: '500' }}>{item.aciklama}</span>
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: '1.05rem', color: '#f8fafc', fontWeight: '800' }}>
-                    {item.sell.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                    {item.satis.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
                   </div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: item.change >= 0 ? '#34d399' : '#f87171' }}>
-                    {item.change >= 0 ? `▲ %${item.change} Artış` : `▼ %${Math.abs(item.change)} Düşüş`}
+                  <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: item.degisim >= 0 ? '#34d399' : '#f87171' }}>
+                    {item.degisim >= 0 ? `▲ %${item.degisim} Artış` : `▼ %${Math.abs(item.degisim)} Düşüş`}
                   </span>
                 </div>
               </div>
@@ -207,7 +207,7 @@ export default function FinanceRobotApp() {
               YAPAY ZEKA FNANS ASSTANI
             </div>
             <div style={{ fontSize: '1.1rem', color: '#f8fafc', fontWeight: '800', lineHeight: '1.4' }}>
-              {calcAmount} Adet {selectedItem.name} = <span style={{ color: '#38bdf8' }}>{calculatedTotal}</span>
+              {miktar} Adet {secilenKur.ad} = <span style={{ color: '#38bdf8' }}>{toplamTutar}</span>
             </div>
           </div>
         </div>
