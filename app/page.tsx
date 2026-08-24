@@ -1,7 +1,12 @@
 ﻿'use client';
 
 import { useState, useEffect } from 'react';
-import Script from 'next/script';
+import dynamic from 'next/dynamic';
+
+const Spline = dynamic(() => import('@splinetool/react-spline'), {
+  ssr: false,
+  loading: () => <div style={{ width: '100%', height: '100%', backgroundColor: '#05070f' }} />
+});
 
 interface RateItem {
   name: string;
@@ -37,7 +42,7 @@ export default function FinanceRobotApp() {
     const timer = setTimeout(() => {
       setIsThinking(false);
       setRobotSpeech(`${calcAmount} ${selectedItem.name} = ${calculatedTotal} 🚀`);
-    }, 350);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [calcAmount, selectedCurrency]);
@@ -45,14 +50,7 @@ export default function FinanceRobotApp() {
   return (
     <main style={{ minHeight: '100vh', backgroundColor: '#05070f', color: '#f8fafc', fontFamily: 'system-ui, -apple-system, sans-serif', position: 'relative', overflowX: 'hidden' }}>
       
-      {/* Spline Viewer Kütüphanesi */}
-      <Script 
-        src="https://unpkg.com/@splinetool/viewer@latest/build/spline-viewer.js" 
-        strategy="beforeInteractive" 
-        type="module"
-      />
-
-      {/* TÜM EKRANI KAPLAYAN 3D ROBOT KATMANI (Fareyi tüm ekranda takip eder) */}
+      {/* 3D SPLINE ROBOT - TAM EKRAN TUVAL */}
       <div style={{
         position: 'fixed',
         top: 0,
@@ -62,15 +60,11 @@ export default function FinanceRobotApp() {
         zIndex: 1,
         pointerEvents: 'auto'
       }}>
-        {/* @ts-expect-error spline-viewer web component */}
-        <spline-viewer 
-          url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" 
-          style={{ width: '100%', height: '100%' }}
-        />
+        <Spline scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" />
       </div>
 
-      {/* Üst Canlı Kayan Şerit */}
-      <div style={{ position: 'relative', zIndex: 30, backgroundColor: 'rgba(10, 15, 30, 0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden', whiteSpace: 'nowrap', padding: '10px 0', pointerEvents: 'none' }}>
+      {/* Üst Kayan Borsa Şeridi */}
+      <div style={{ position: 'relative', zIndex: 20, backgroundColor: 'rgba(10, 15, 30, 0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden', whiteSpace: 'nowrap', padding: '10px 0', pointerEvents: 'none' }}>
         <div style={{ display: 'inline-block', animation: 'marquee 22s linear infinite' }}>
           {rates.map((r, i) => (
             <span key={i} style={{ margin: '0 18px', fontSize: '0.88rem' }}>
@@ -84,10 +78,10 @@ export default function FinanceRobotApp() {
         </div>
       </div>
 
-      {/* Ana çerik Izgarası (Cam Efektli & Şeffaf) */}
+      {/* Ana Cam Kartlar (Robotun Üstünde Katman) */}
       <div style={{
         position: 'relative',
-        zIndex: 20,
+        zIndex: 10,
         maxWidth: '1400px',
         margin: '0 auto',
         padding: '30px 24px 80px 24px',
@@ -97,7 +91,7 @@ export default function FinanceRobotApp() {
         pointerEvents: 'none'
       }}>
         
-        {/* Sol Panel: Şık Cam Hesaplayıcı & Kurlar (Tıklanabilir) */}
+        {/* Sol Panel */}
         <div style={{ pointerEvents: 'auto' }}>
           
           <div style={{ marginBottom: '20px' }}>
@@ -111,7 +105,7 @@ export default function FinanceRobotApp() {
 
           {/* Hesaplama Kartı */}
           <div style={{
-            background: 'rgba(15, 23, 42, 0.72)',
+            background: 'rgba(15, 23, 42, 0.75)',
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
             border: '1px solid rgba(255, 255, 255, 0.14)',
@@ -164,14 +158,14 @@ export default function FinanceRobotApp() {
             </div>
           </div>
 
-          {/* Kurlar Grid */}
+          {/* Kurlar Izgarası */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
             {rates.map((item) => (
               <div
                 key={item.code}
                 onClick={() => setSelectedCurrency(item.code)}
                 style={{
-                  backgroundColor: selectedCurrency === item.code ? 'rgba(30, 41, 59, 0.88)' : 'rgba(15, 23, 42, 0.65)',
+                  backgroundColor: selectedCurrency === item.code ? 'rgba(30, 41, 59, 0.9)' : 'rgba(15, 23, 42, 0.65)',
                   backdropFilter: 'blur(16px)',
                   WebkitBackdropFilter: 'blur(16px)',
                   border: selectedCurrency === item.code ? '1.5px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
@@ -194,11 +188,11 @@ export default function FinanceRobotApp() {
 
         </div>
 
-        {/* Sağ Taraf: Robotun Üzerinde Havada Duran Konuşma Baloncuğu */}
+        {/* Sağ Panel: Konuşma Baloncuğu */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: '20px' }}>
           <div style={{
             maxWidth: '380px',
-            background: 'rgba(15, 23, 42, 0.85)',
+            background: 'rgba(15, 23, 42, 0.88)',
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
             border: '1.5px solid rgba(56, 189, 248, 0.45)',
